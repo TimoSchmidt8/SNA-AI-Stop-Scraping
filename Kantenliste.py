@@ -1,21 +1,20 @@
 import json
 import pandas as pd
 
-# Exakter Pfad zur bereinigten JSON-Datei im Unterordner 'data cleared'
+# Absoluter Pfad zur bereinigten JSON-Datei
 input_json = (
-    '/Users/timoschmidt/Desktop/UNI ULM WIN/HiWi/SNA Projekt'
-    ' Scraping/data/data cleared/unique_tweets_cleaned.json'
+    '/Users/timoschmidt/Desktop/UNI ULM WIN/HiWi/SNA Projekt Scraping/data/data cleared/unique_tweets_cleaned2.json'
 )
 
-# Einlesen der bereinigten Daten
+# 1. Bereinigte JSON einlesen
 with open(input_json, 'r', encoding='utf-8') as f:
   tweets = json.load(f)
 
-print(f'{len(tweets)} bereinigte Tweets geladen. Extrahiere Kanten...')
+print(f'{len(tweets)} Tweets geladen. Extrahiere Kanten für Gephi...')
 
 edges = []
 
-# Interaktionen extrahieren (Replies, Quotes, Mentions)
+# 2. Durch alle Tweets iterieren und Interaktionen extrahieren
 for tweet in tweets:
   author_dict = tweet.get('author', {})
   source = (
@@ -24,12 +23,12 @@ for tweet in tweets:
   if not source:
     continue
 
-  # 1. Replies (Antworten)
+  # A. Replies (Antworten)
   in_reply_to = tweet.get('inReplyToUsername')
   if in_reply_to and in_reply_to != source:
     edges.append({'source': source, 'target': in_reply_to, 'type': 'reply'})
 
-  # 2. Quotes (Zitate)
+  # B. Quotes (Zitierte Tweets)
   quote = tweet.get('quote')
   if isinstance(quote, dict):
     q_author = quote.get('author', {})
@@ -38,7 +37,7 @@ for tweet in tweets:
       if q_username and q_username != source:
         edges.append({'source': source, 'target': q_username, 'type': 'quote'})
 
-  # 3. Mentions (Erwähnungen im Text)
+  # C. Mentions (@Erwähnungen im Text)
   entities = tweet.get('entities', {})
   if isinstance(entities, dict):
     mentions = entities.get('user_mentions', [])
@@ -51,27 +50,27 @@ for tweet in tweets:
                 {'source': source, 'target': m_screen, 'type': 'mention'}
             )
 
-# In DataFrame umwandeln
+# 3. In DataFrame umwandeln
 edges_df = pd.DataFrame(edges)
 
 if not edges_df.empty:
-  # Kanten aggregieren und Gewichte berechnen
+  # 4. Kanten zusammenfassen und Gewicht (Weight) berechnen
   network_edges = (
       edges_df.groupby(['source', 'target']).size().reset_index(name='weight')
   )
 
-  # Speichern als CSV im selben Ordner wie die JSON-Datei
+  # 5. Speichern als CSV für Gephi
   output_csv = (
       '/Users/timoschmidt/Desktop/UNI ULM WIN/HiWi/SNA Projekt'
-      ' Scraping/data/data cleared/network_edges.csv'
+      ' Scraping/data/network_edges.csv'
   )
   network_edges.to_csv(output_csv, index=False)
 
   print(
-      f'Erfolgreich! {len(network_edges)} eindeutige Kanten gespeichert unter:'
-      f' \n{output_csv}'
+      f'Erfolgreich! {len(network_edges)} eindeutige Kanten gespeichert unter:\n'
+      f'{output_csv}'
   )
-  print('\nVorschau:')
+  print('\nVorschau der ersten Kanten:')
   print(network_edges.head(10))
 else:
-  print('Keine Kanten im Datensatz gefunden.')
+  print('Keine Kanten gefunden.')
