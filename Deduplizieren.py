@@ -1,7 +1,7 @@
 import json
 import pandas as pd
 
-# 1. Exakte Pfade zu deinen 5 JSON-Dateien in den jeweiligen RUN-Ordnern
+# 1. Exakte Pfade zu allen 9 JSON-Dateien in den jeweiligen RUN-Ordnern
 json_files = [
     (
         '/Users/timoschmidt/Desktop/UNI ULM WIN/HiWi/SNA Projekt'
@@ -27,6 +27,23 @@ json_files = [
         '/Users/timoschmidt/Desktop/UNI ULM WIN/HiWi/SNA Projekt'
         ' Scraping/data/APIFY/RUN'
         ' 5/5_dataset_tweet-scraper_2026-10-12_12-46-19-207.json'
+    ),
+    (
+        '/Users/timoschmidt/Desktop/UNI ULM WIN/HiWi/SNA Projekt'
+        ' Scraping/data/APIFY/RUN'
+        ' 6/6_dataset_tweet-scraper_2026-10-16_11-56-27-896.json'
+    ),
+    (
+        '/Users/timoschmidt/Desktop/UNI ULM WIN/HiWi/SNA Projekt'
+        ' Scraping/data/APIFY/RUN 7/dataset_tweet-scraper_2026-10-16_12-01-58-363.json'
+    ),
+    (
+        '/Users/timoschmidt/Desktop/UNI ULM WIN/HiWi/SNA Projekt'
+        ' Scraping/data/APIFY/RUN 8/dataset_tweet-scraper_2026-10-16_12-18-30-842.json'
+    ),
+    (
+        '/Users/timoschmidt/Desktop/UNI ULM WIN/HiWi/SNA Projekt'
+        ' Scraping/data/APIFY/RUN 9/dataset_tweet-scraper_2026-10-19_09-10-00-361.json'
     ),
 ]
 
@@ -64,7 +81,7 @@ else:
 # 5. Bereinigten Datensatz speichern
 output_filename = (
     '/Users/timoschmidt/Desktop/UNI ULM WIN/HiWi/SNA Projekt'
-    ' Scraping/data/unique_tweets_cleaned.json'
+    ' Scraping/data/unique_tweets_cleaned2.json'
 )
 df_clean.to_json(
     output_filename, orient='records', force_ascii=False, indent=2
